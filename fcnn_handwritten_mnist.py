@@ -23,7 +23,7 @@ def build_model():
     h4 = Dense(128, activation='relu', name='h4')(h3)
     outputs = Dense(number_of_classes,activation='softmax', name = 'output_layer')(h4)
     model = Model(inputs, outputs)
-    model.compile(optimizer="rmsprop", loss = 'sparse_categorical_crossentropy', metrics = ['accuracy'])
+    model.compile(optimizer="rmsprop", loss = 'categorical_crossentropy', metrics = ['accuracy'])
     return model
 
 
@@ -52,6 +52,9 @@ def main():
     trnY = np.concatenate((trainY, y_train), axis=0)
     tstX = np.concatenate((testX, X_test), axis=0)
     tstY = np.concatenate((testY, y_test), axis=0)
+    trnY = to_categorical(trnY, num_classes=10)
+    tstY = to_categorical(tstY, num_classes=10)
+    
     
     
 

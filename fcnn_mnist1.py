@@ -32,7 +32,7 @@ def main():
     model=build_model()
 
     
-    #.npz image to array save tf/lib/python3.10/site-packages/keras
+   
     (trainX, trainY), (testX, testY) = load_data()
     trainY = to_categorical(trainY, num_classes = 10)
     testY = to_categorical(testY, num_classes = 10)
@@ -44,6 +44,8 @@ def main():
  
 
     model.summary(show_trainable = True)
+    test_loss, test_acc = model.evaluate(x_test, y_test, verbose=0)
+    print(f"Test Accuracy: {test_acc:.4f}")
     
     
 

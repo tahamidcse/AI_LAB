@@ -34,17 +34,22 @@ def main():
     
     #.npz image to array save tf/lib/python3.10/site-packages/keras
     (trainX, trainY), (testX, testY) = load_data()
+    trainX = trainX.astype("float32") / 255.0
+    testX = testX.astype("float32") / 255.0
+    trainX = np.expand_dims(trainX, -1)
+    testX = np.expand_dims(testX, -1)
     trainY = to_categorical(trainY, num_classes = 10)
     testY = to_categorical(testY, num_classes = 10)
     
     
+    
 
     
-    model.fit(trainX, trainY, epochs=20, batch_size=32, validation_data=(testX, testY))
+    model.fit(trainX, trainY, epochs=1, batch_size=32, validation_data=(testX, testY))
  
 
     model.summary(show_trainable = True)
-    test_loss, test_acc = model.evaluate(testX, testX, verbose=0)
+    test_loss, test_acc = model.evaluate(testX, testY, verbose=0)
     print(f"Test Accuracy: {test_acc:.4f}")
     
     

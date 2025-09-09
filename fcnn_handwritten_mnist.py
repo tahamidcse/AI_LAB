@@ -1,17 +1,13 @@
 
 
-
 from tensorflow.keras.datasets.mnist import load_data
-
 import numpy as np
+import random
+import matplotlib.pyplot as plt
+
 from tensorflow.keras.utils import to_categorical
-from tensorflow.keras.layers import Input, Flatten, Dense, Conv2D, MaxPooling2D
+from tensorflow.keras.layers import Input, Flatten, Dense
 from tensorflow.keras.models import Model
-import keras
-import os
-
-
-
 def build_model():
     number_of_classes=10
     inputs = Input((28,28,1),name='Input Layer')
@@ -23,7 +19,7 @@ def build_model():
     h4 = Dense(128, activation='relu', name='h4')(h3)
     outputs = Dense(number_of_classes,activation='softmax', name = 'output_layer')(h4)
     model = Model(inputs, outputs)
-    model.compile(optimizer="rmsprop", loss = 'categorical_crossentropy', metrics = ['accuracy'])
+    model.compile(optimizer="rmsprop", loss = 'sparse_categorical_crossentropy', metrics = ['accuracy'])
     return model
 
 
@@ -35,11 +31,7 @@ def main():
     
     #.npz image to array save tf/lib/python3.10/site-packages/keras
     (trainX, trainY), (testX, testY) = load_data()
-    cwd = os.getcwd()
-    npz_path = os.path.join(cwd, "tf", "lib", "python3.10", "site-packages", "keras", "datasets", "my_dataset.npz")
-
-    
-    data    = np.load(npz_path)
+    data    = np.load("/home/abc/Downloads/my_dataset.npz")
     X_train = data['x_train']
     X_test = data['x_test']
     y_train = data['y_train']
@@ -52,9 +44,6 @@ def main():
     trnY = np.concatenate((trainY, y_train), axis=0)
     tstX = np.concatenate((testX, X_test), axis=0)
     tstY = np.concatenate((testY, y_test), axis=0)
-    trnY = to_categorical(trnY, num_classes=10)
-    tstY = to_categorical(tstY, num_classes=10)
-    
     
     
 
@@ -63,9 +52,35 @@ def main():
  
 
     model.summary(show_trainable = True)
+    loss, accuracy = model.evaluate(tstX, tstY, verbose=0)
+    print(f"Test Accuracy: {accuracy:.4f}")
+    
+    predict = model.predict(tstX)
+    predicLabel = np.argmax(predict, axis=1)
+    trueLabel = tstY
+    print('True Labels: {}\nPredicted Labels: {}\n'.format(trueLabel, predicLabel))
+
+    # --- Display 25 random test images with predictions
+    K = 1  # Number of times to show a batch of 25 images (set >1 if needed)
+    for _ in range(K):
+        indices = random.sample(range(testX.shape[0]), 25)
+        fig = plt.figure('Digits of Test Set', figsize=(20, 20))
+        for j, i in enumerate(indices, 1):
+            fig.add_subplot(5, 5, j)
+            title = f'[TL: {trueLabel[i]}] [PL: {predicLabel[i]}]'
+            plt.title(title)
+            plt.xticks([])
+            plt.yticks([])
+            plt.imshow(testX[i, :, :, 0], cmap='gray')
+        plt.show()
+    plt.close()
+
+
+if __name__ == "__main__":
+    main()
+
     
     
 
     
-if __name__ == "__main__":
-  main()
+

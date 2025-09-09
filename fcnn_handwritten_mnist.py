@@ -72,6 +72,7 @@ def main():
             plt.xticks([])
             plt.yticks([])
             plt.imshow(testX[i, :, :, 0], cmap='gray')
+        plt.tight_layout()    
         plt.show()
     plt.close()
 

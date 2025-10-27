@@ -27,8 +27,8 @@ def main():
 
     # --- Load and preprocess data
     (trainX, trainY), (testX, testY) = load_data()
-    trainX = trainX.reshape(-1, 28, 28, 1)
-    testX = testX.reshape(-1, 28, 28, 1)
+    trainX = trainX.reshape(-1, 28, 28, 1).astype("float32") / 255.0)
+    testX = testX.reshape(-1, 28, 28, 1).astype("float32") / 255.0)
 
 # Convert to binary labels: 0 for even, 1 for odd
 def is_odd(y):
